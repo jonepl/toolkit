@@ -49,9 +49,11 @@ public class DBOperations {
 	
 	// Executes a SQL query
 	public void query(String query){
+		
 		try {
 			st = con.createStatement();
-			st.executeUpdate(query);
+			rs = st.executeQuery(query);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
