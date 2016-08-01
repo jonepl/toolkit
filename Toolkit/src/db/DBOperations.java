@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import csv.CSV;
+
 public class DBOperations {
 	
 	private Connection con;
@@ -59,6 +61,10 @@ public class DBOperations {
 		}
 	}
 	
+	public ResultSet getResultSet(){
+			return rs;
+	}
+	
 	// Creates a database
 	public void createDB(String db){
 		query("CREATE DATABASE " + db);
@@ -72,7 +78,30 @@ public class DBOperations {
 	}
 	
 	// Creates a new table
-	public void createTable(String sql) {
+	public void createTable(String table, ColumnStructure[] cs) {
+		
+		String sql ="CREATE TABLE " + dbName + "." + table + " "
+				+ "( `name` VARCHAR(20) NOT NULL , "
+				+ "`owner` VARCHAR(20) NOT NULL , "
+				+ "`species` VARCHAR(20) NOT NULL ,"
+				+ "`sex` CHAR(1) NOT NULL , "
+				+ "`birth` DATE NOT NULL , "
+				+ "`death` DATE NOT NULL )  "
+				+ "ENGINE = InnoDB";
+		query(sql);
+	}
+	
+	// Creates a new table
+	public void createTable(String table) {
+		
+		String sql ="CREATE TABLE " + dbName + "." + table + " "
+				+ "( `name` VARCHAR(20) NOT NULL , "
+				+ "`owner` VARCHAR(20) NOT NULL , "
+				+ "`species` VARCHAR(20) NOT NULL ,"
+				+ "`sex` CHAR(1) NOT NULL , "
+				+ "`birth` DATE NOT NULL , "
+				+ "`death` DATE NOT NULL )  "
+				+ "ENGINE = InnoDB";
 		query(sql);
 	}
 	// Removes all records and Database
@@ -120,11 +149,17 @@ public class DBOperations {
 		}
 	}
 	
+	
+	
 	// Sets DB credentials
 	public void setCredentials(String db, String un, String pd){
 		
 		dbName = db;
 		userName = un;
 		password = pd;
+	}
+	
+	public void CSVToDB(CSV csv){
+		
 	}
 }

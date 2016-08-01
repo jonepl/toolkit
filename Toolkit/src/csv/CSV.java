@@ -1,14 +1,13 @@
 /* Author: 		Purnell Jones
  * File:		CSV.java
  * Description:	This class will take in a CSV, store its header
- * 				number of rows, columns, determine if the CSV is
- * 				valid. This is meant to be used to interface with
- * 				mySQL database
+ * 		number of rows, columns, determine if the CSV is
+ * 		valid. This is meant to be used to interface with
+ * 		mySQL database
  * 
  */
 
 package csv;
-import db.ColumnStructure;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -20,23 +19,22 @@ public class CSV {
 	private String fileName;
 	private String delimiter;
 	private String[] header;
+	private String[] sampleRow;
 	private int numCols;
 	private int numRows;
-	private ColumnStructure[] cs;
-	//private BufferedReader br;
-	
+		
 	// Constructor
 	public CSV(String file, String delim, boolean hasHeader){
-		// Retrieve the number of columns from the file
-
+		
 		this.fileName = file;
 		this.delimiter = delim;
 		this.numCols = 0;
 		this.numRows = 0;
+		this.sampleRow = null;
 		this.header = null;
-		this.cs = null;
 		// Sets Col, Rows, Header, Column Structure
 		parseCSV(file);
+		System.out.println(sampleRow[0]);
 	}
 	
 	public void parseCSV(String file){
@@ -46,7 +44,6 @@ public class CSV {
 		// Sets the rows and data member and validates CSV
 		numRows = validateCSV();
 		// Sets the cs data member
-		cs = defineColumnStructure();
 	} 
 
 	public int retrieveHeader(){
@@ -86,6 +83,7 @@ public class CSV {
 			while((line = br.readLine()) != null) {
 				++rowCnt;
 				String[] row = line.split(delimiter);
+				if(rowCnt == 3){ sampleRow = line.split(delimiter); }
 				// if any row has more than entries than columns the CSV isn't valid
 				if(row.length > header.length){
 					break;
@@ -109,25 +107,6 @@ public class CSV {
 
 		return rowCnt;
 	}
-	
-	public ColumnStructure[] defineColumnStructure(){
-		
-		ColumnStructure[] tempCS = null;
-		
-		cs = new ColumnStructure[numCols];
-		
-		for(int i = 0; i < cs.length; i++){
-			cs[i].setName(header[i]);
-			cs[i].setType("VARCHAR");
-			cs[i].setLengthValue("255");
-			cs[i].setDefaultCol("");
-			cs[i].setCollation("");
-			cs[i].setAtrributes("");
-			cs[i].setNullCol("");
-			cs[i].setIndex("");
-		}
-		return tempCS;
-	}	
 
 	/******* Getters & Setters **************/
 	public void printHeader(){
@@ -149,11 +128,11 @@ public class CSV {
 		return numRows;
 	} 
 	
+	public int getNumCols(){
+		return numCols;
+	} 
+	
 	public String[] getHeader(){
 		return header;
-	}
-
-	public ColumnStructure[] getColumnStructure(){
-		return cs;
 	}
 }
