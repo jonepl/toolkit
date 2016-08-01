@@ -43,7 +43,6 @@ public class CSV {
 		numCols = retrieveHeader();
 		// Sets the rows and data member and validates CSV
 		numRows = validateCSV();
-		// Sets the cs data member
 	} 
 
 	public int retrieveHeader(){
