@@ -1,6 +1,6 @@
 /* Author: 		Purnell Jones
  * File:		CSV.java
- * Description:	This class will take in a CSV, store its header
+ * Description:	This class will take in a csv file, store its header
  * 		number of rows, columns, determine if the CSV is
  * 		valid. This is meant to be used to interface with
  * 		mySQL database
@@ -33,18 +33,18 @@ public class CSV {
 		this.sampleRow = null;
 		this.header = null;
 		// Sets Col, Rows, Header, Column Structure
-		parseCSV(file);
-		System.out.println(sampleRow[0]);
+		parseCSV(file);			
 	}
-	
+	// 
 	public void parseCSV(String file){
-		
+		// TODO: Add logic for determining a csv with header versus without
 		// Sets the header and numCol data members 
 		numCols = retrieveHeader();
 		// Sets the rows and data member and validates CSV
 		numRows = validateCSV();
 	} 
-
+	
+	// Reads in the first row of the csv file
 	public int retrieveHeader(){
 		
 		String line = "";
@@ -70,9 +70,14 @@ public class CSV {
 		return colCnt;
 	}
 	
+	/*	Reads entire file to ensure no row contains more columns than header
+	 *	specifies.
+	 *	Retrieve a sample Row from the 3 column.
+	 *	RETURNS: number of columns if valid
+	 */
 	public int validateCSV(){
 		
-		int rowCnt = 0;	
+		int rowCnt = -1;	
 		BufferedReader br = null;
 		String line = "";
 		try{
@@ -81,10 +86,12 @@ public class CSV {
 			// Read each line of the file			
 			while((line = br.readLine()) != null) {
 				++rowCnt;
+				// TODO: Find better method to set sampleRow 
 				String[] row = line.split(delimiter);
 				if(rowCnt == 3){ sampleRow = line.split(delimiter); }
-				// if any row has more than entries than columns the CSV isn't valid
+				// if any row has more entries than columns the CSV is invalid
 				if(row.length > header.length){
+					rowCnt = 0;
 					break;
 				}
 			}
@@ -129,7 +136,11 @@ public class CSV {
 	
 	public int getNumCols(){
 		return numCols;
-	} 
+	}
+	
+	public String[] getSampleRow(){
+		return sampleRow;
+	}
 	
 	public String[] getHeader(){
 		return header;

@@ -1,9 +1,7 @@
 /*
  * Author: Purnell Jones
  * File DBOperations.java
- * Description: This class is used to interface with
- * 				mySQL database. 
- * 
+ * Description: This class is used to interface with MySQL database.  
  */
 
 package db;
@@ -49,7 +47,7 @@ public class DBOperations {
 		}
 	}
 	
-	// Executes a SQL query
+	// Executes non data manipulating SQL queries
 	public void query(String query){
 		
 		try {
@@ -61,6 +59,19 @@ public class DBOperations {
 		}
 	}
 	
+	// Executes a SQL query
+	public void queryUpdate(String query){
+		// TODO: lookup the purpose of the numerical return type of executeUpdate
+		try {
+			st = con.createStatement();
+			int num = st.executeUpdate(query);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// Returns the ResultSet data member
 	public ResultSet getResultSet(){
 			return rs;
 	}
@@ -78,32 +89,24 @@ public class DBOperations {
 	}
 	
 	// Creates a new table
-	public void createTable(String table, ColumnStructure[] cs) {
+	public void createTable(String table, ColumnStructure cs) {
 		
-		String sql ="CREATE TABLE " + dbName + "." + table + " "
-				+ "( `name` VARCHAR(20) NOT NULL , "
-				+ "`owner` VARCHAR(20) NOT NULL , "
-				+ "`species` VARCHAR(20) NOT NULL ,"
-				+ "`sex` CHAR(1) NOT NULL , "
-				+ "`birth` DATE NOT NULL , "
-				+ "`death` DATE NOT NULL )  "
-				+ "ENGINE = InnoDB";
-		query(sql);
+		String sql = "CREATE TABLE IF NOT EXISTS " + dbName + "." + table + " (";
+		int csSize = cs.getColStruct().length;
+		// Appends the strings require to create each column
+		for(int i = 0; i < csSize; i++){
+			// Appends a comma to all except last row
+			if(i != csSize-1){
+				sql += cs.getColStruct()[i].getSQL() + ", ";
+			}else{
+				sql += cs.getColStruct()[i].getSQL() + ")";
+			}
+		}
+		
+		System.out.println("Executing SQL Statement: " + sql);
+		queryUpdate(sql);
 	}
 	
-	// Creates a new table
-	public void createTable(String table) {
-		
-		String sql ="CREATE TABLE " + dbName + "." + table + " "
-				+ "( `name` VARCHAR(20) NOT NULL , "
-				+ "`owner` VARCHAR(20) NOT NULL , "
-				+ "`species` VARCHAR(20) NOT NULL ,"
-				+ "`sex` CHAR(1) NOT NULL , "
-				+ "`birth` DATE NOT NULL , "
-				+ "`death` DATE NOT NULL )  "
-				+ "ENGINE = InnoDB";
-		query(sql);
-	}
 	// Removes all records and Database
 	public void dropTable(String tb){
 		query("DROP Table " + tb);
@@ -150,15 +153,15 @@ public class DBOperations {
 	}
 	
 	
-	
 	// Sets DB credentials
-	public void setCredentials(String db, String un, String pd){
+	public void setCredentials(String db, String un, String pw){
 		
 		dbName = db;
 		userName = un;
-		password = pd;
+		password = pw;
 	}
 	
+	// Fills defined table with all rows from the csv file passed in
 	public void CSVToDB(CSV csv){
 		
 	}
