@@ -35,13 +35,14 @@ public class DBOperations {
 	}
 	// Establishes connection with mySQL
 	public void connect(){
-		
+		System.out.println("Connecting...");
 		try{
-			// ********************
+			//System.out.println("dbName: " + dbName + " userName: " + userName + " password: " + password);
 			Class.forName("com.mysql.jdbc.Driver");
-			// Makes connection to mySQL DB
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/"+dbName,userName,password);
 			
+			// Makes connection to mySQL DB
+			this.con = DriverManager.getConnection("jdbc:mysql://localhost:3306/",userName,password);
+			System.out.println("Succesfully Connected. connection: " + this.con);
 		} catch(Exception ex){
 			System.out.println("connect() Error: " + ex);
 		}
@@ -78,7 +79,8 @@ public class DBOperations {
 	
 	// Creates a database
 	public void createDB(String db){
-		query("CREATE DATABASE " + db);
+		if(con == null) this.connect();
+		queryUpdate("CREATE DATABASE IF NOT EXISTS " + db);
 		System.out.println("Database created successfully...");
 	}
 	
@@ -123,7 +125,7 @@ public class DBOperations {
 	}
 	
 	public void insertCSV(String tableName, CSV csv, ColumnStructure cs) {
-		String q = "INSERT INTO " + tableName + " (";
+		String q = "INSERT INTO " + dbName + "." + tableName + " (";
 		String[] header = csv.getHeader();
 		// Appends headers to query statement
 		// TODO headers are stored with spaces 

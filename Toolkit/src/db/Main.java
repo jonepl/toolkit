@@ -18,7 +18,7 @@ public class Main {
 		ColumnStructure cs = new ColumnStructure(csv);
 		
 		System.out.println("~~~~~~~~~~~~~~~~~~~");
-		cs.getColStructDetails();
+		//cs.getColStructDetails();
 		
 		DBOperations dbo = new DBOperations();
 //		dbo.createTable("MyDBTable",cs);
@@ -27,6 +27,8 @@ public class Main {
 //		boolean result = c.isAlphabetical("1Hello1");
 //		
 //		System.out.println("Result of your test: " + result);
+		dbo.createDB("javadb");
+		dbo.createTable("duh",cs);
 		dbo.insertCSV("duh", csv, cs);
 	}
 }

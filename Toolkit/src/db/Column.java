@@ -32,15 +32,17 @@ public class Column {
 	}
 	
 	// Uses regular expressions to determine and set the data members column
-	public String defineColumn(String header, String type){
+	public String defineColumn(String header, String sampleCell){
 		
 		this.setName(header.replaceAll(" ",""));
 		
-		if(isAlphabetical(type)){
+		if(isAlphabetical(sampleCell)){
 		
 			this.setLengthValue( "255" );
 			this.setType( "VARCHAR(" + this.lengthValue + ")" );
-			this.setSQL(name + " " + type);
+			this.setSQL(name + " " + this.type);
+			System.out.println("Type: " + this.type);
+			System.out.println("SQL data member" + this.sql);
 			// TODO: Consider Splitting type into single and make typeAndLength variable
 			// this.setTypeAndLength(this.type + "(" + this.lengthValue + ")");
 			
@@ -49,35 +51,35 @@ public class Column {
 			System.out.println("SQL Column statement: " + sql);
 		}
 		
-		else if(isNumerical(type)){
+		else if(isNumerical(sampleCell)){
 			
 			this.setType("INT");
-			this.setSQL(name + " " + type);
+			this.setSQL(this.name + " " + this.type);
 
 			/***********************/
-			System.out.println(name + " is a Number");
-			System.out.println("SQL Column statement: " + sql);
+			System.out.println(this.name + " is a Number");
+			System.out.println("SQL Column statement: " + this.sql);
 		}
-		else if(isAFloat(type)){
+		else if(isAFloat(sampleCell)){
 
 			this.setType("FLOAT");
-			this.setSQL(name + " " + type);
+			this.setSQL(this.name + " " + this.type);
 
-			System.out.println(name + " is a float");
-			System.out.println("SQL Column statement: " + sql);
+			System.out.println(this.name + " is a float");
+			System.out.println("SQL Column statement: " + this.sql);
 		}
-		else if(isADateTime(type)){
+		else if(isADateTime(sampleCell)){
 			
 			this.setType("DATETIME");
-			this.setSQL(name + " " + type);
+			this.setSQL(this.name + " " + this.type);
 			
-			System.out.println(name + " is a DateTime");
-			System.out.println("SQL Column statement: " + sql);
+			System.out.println(this.name + " is a DateTime");
+			System.out.println("SQL Column statement: " + this.sql);
 		}
-		else if(isADate(type)) {
+		else if(isADate(sampleCell)) {
 
 			this.setType("DATE");
-			this.setSQL(name + " " + type);
+			this.setSQL(this.name + " " + this.type);
 			
 			System.out.println(name + " is a Date");
 			System.out.println("SQL Column statement: " + sql);
@@ -85,7 +87,7 @@ public class Column {
 		else{
 			
 			this.setType("VARCHAR(255)");
-			this.setSQL(name + " " + type);
+			this.setSQL(this.name + " " + this.type);
 			
 			System.out.println("sql can not be determined...");
 			System.out.println("SQL Column statement: " + sql);
