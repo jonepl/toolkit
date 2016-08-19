@@ -10,6 +10,7 @@ public class Main {
 		
 		String file = "Expenses.csv";
 		CSV csv1 = new CSV(file,",",true);
-		csv1.printHeader();
+		//csv1.printHeader();
+		
 	}
 }

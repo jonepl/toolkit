@@ -49,6 +49,7 @@ public class Main {
 				case 1:	
 					// Skips new line
 					sc.nextLine();
+					// Gets Table name
 					userTextInput = sc.nextLine();
 					// TODO Ensure input is in correct format
 					System.out.println("Creating New Database with name: " + userTextInput);
@@ -60,8 +61,9 @@ public class Main {
 					sc.nextLine();
 					userTextInput = sc.nextLine();
 					// TODO Ensure input is in correct format
-					System.out.println("Creating New Database with name: " + userTextInput);
+					System.out.println("Creating New Table with name: " + userTextInput);
 					dbo.createTable(userTextInput,cs);
+					dbo.loadCSV(csv);
 					break;
 					
 				default: 
@@ -71,10 +73,6 @@ public class Main {
 			
 		}
 		sc.close();
-		
-		
-		
-		
 	}
 	
 	public void welcomePrompt(){
@@ -87,7 +85,7 @@ public class Main {
 		System.out.println("\nPlease select one of the options below to start.\n");
 		System.out.println("0. Exit Program\n"
 						 + "1. Create a NEW MySQL Datatbase\n"
-						 + "2. Create a NEW MySQL Table\n"
+						 + "2. Create and Load NEW MySQL Table\n"
 						 + "3. ...\n");
 	}
 	

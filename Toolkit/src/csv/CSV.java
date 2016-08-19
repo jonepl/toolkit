@@ -13,6 +13,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import db.ColumnStructure;
+
+// TODO Decide whether to abstract out CSV Column logic or combine into one large object
 
 public class CSV {
 	
@@ -22,6 +25,8 @@ public class CSV {
 	private String[] sampleRow;
 	private int numCols;
 	private int numRows;
+	// TODO export recordListCnt to configuration file
+	private static int recordListCnt = 150;
 		
 	// Constructor
 	public CSV(String file, String delim, boolean hasHeader){
@@ -35,9 +40,10 @@ public class CSV {
 		// Sets Col, Rows, Header, Column Structure
 		parseCSV(file);			
 	}
-	// 
+	
+	// Sets number of rows, columns and set header
 	public void parseCSV(String file){
-		// TODO: Add logic for determining a csv with header versus without
+		// TODO: Add logic for determining a csv with header versus without header
 		// Sets the header and numCol data members 
 		numCols = retrieveHeader();
 		// Sets the rows and data member and validates CSV
@@ -53,7 +59,7 @@ public class CSV {
 		try {
 			br = new BufferedReader(new FileReader(fileName));
 			line = br.readLine();
-			header = line.split(delimiter);
+			header = removeSpaces(line.split(delimiter));
 			colCnt = header.length;
 			
 		} catch (FileNotFoundException e) {
@@ -68,6 +74,14 @@ public class CSV {
 			}
 		}
 		return colCnt;
+	}
+	
+	public String [] removeSpaces(String[] header) {
+		
+		for(int i = 0; i < header.length; i++ ) { 
+			header[i] = header[i].replaceAll(" ", ""); 
+		}
+		return header;
 	}
 	
 	/*	Reads entire file to ensure no row contains more columns than header
@@ -113,12 +127,87 @@ public class CSV {
 
 		return rowCnt;
 	}
+	
+	public String[] getInsertValueList(CSV csv, ColumnStructure cs){
+		// Creates n amount of value packages
+		int recordListSize = ((int)Math.ceil(csv.getNumRows()/recordListCnt)) + 1;
+		String[] recordList = new String[recordListSize];
+		String recordListStr = "";
+		int lineCounter = 0;
+		int recordCounter = 0;
+		BufferedReader br = null;
+		String line = "";
+		
+		try{
+			br = new BufferedReader(new FileReader(fileName));
+			line = br.readLine();
+			
+			// Read each line of the file			
+			while((line = br.readLine()) != null) {
+				
+				++lineCounter;
+				recordListStr += " (";
+				String[] row = line.split(delimiter,-1);
+				// TODO: switch for record size with bigger chuncks that 150
+				for(int i = 0; i < row.length; i++) {
+					
+					if(!lastElement(i,row.length))
+					{
 
+						String temp = cs.getColStruct()[i].formatData(row[i]);
+						recordListStr += temp + ", ";
+					}
+					else{
+						
+						String temp = cs.getColStruct()[i].formatData(row[i]);
+						recordListStr += temp + "),\n";
+					}
+				}
+				
+				if(lineCounter%recordListCnt == 0 && lineCounter != 0){ 
+					
+					recordList[recordCounter] = recordListStr;
+					recordListStr = "";
+					++recordCounter;
+				}
+			}
+			
+			String str = recordListStr;
+			str = str.substring(0, str.length()-2);
+			recordList[recordCounter] = str;
+			
+			for(int i = 0; i < recordList.length; i++){
+
+				System.out.print(recordList[i]);
+			}
+		} catch (FileNotFoundException e){
+			
+			e.printStackTrace();
+		} catch (IOException e){
+
+			e.printStackTrace();
+		}finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+		return recordList;
+	}
+
+	public boolean lastElement(int index, int upperbound) {
+		boolean status = false;
+		if (index >= upperbound - 1) status = true;
+		return status;
+	}
 	/******* Getters & Setters **************/
 	public void printHeader(){
 		
 		for(int i = 0; i < header.length; i++){
-			if(i != header.length-1){
+			if(lastElement(i,header.length)){
 				System.out.print(header[i] + ", ");
 			} else {
 				System.out.print(header[i]);
@@ -129,6 +218,10 @@ public class CSV {
 	
 	// Comma delimited String
 	public void setHeader(String headerStr){}
+	
+	public String getFileName() {
+		return fileName;
+	}
 	
 	public int getNumRows(){
 		return numRows;

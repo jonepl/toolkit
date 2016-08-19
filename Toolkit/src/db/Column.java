@@ -28,17 +28,22 @@ public class Column {
 		atrributes = "";
 		nullCol = "";
 		index = "";
+		sql = "";
 	}
+	
 	// Uses regular expressions to determine and set the data members column
-	public String determineSQLStatment(String header, String type){
+	public String defineColumn(String header, String type){
 		
-		name = header.replaceAll(" ","");
+		this.setName(header.replaceAll(" ",""));
 		
 		if(isAlphabetical(type)){
 		
-			lengthValue = "255";
-			type = "VARCHAR(" + lengthValue + ")";
-			sql = name + " " + type;
+			this.setLengthValue( "255" );
+			this.setType( "VARCHAR(" + this.lengthValue + ")" );
+			this.setSQL(name + " " + type);
+			// TODO: Consider Splitting type into single and make typeAndLength variable
+			// this.setTypeAndLength(this.type + "(" + this.lengthValue + ")");
+			
 			/******************/
 			System.out.println(name + " is a String");
 			System.out.println("SQL Column statement: " + sql);
@@ -46,48 +51,53 @@ public class Column {
 		
 		else if(isNumerical(type)){
 			
-			type = "INT";
-			sql = name + " " + type;
+			this.setType("INT");
+			this.setSQL(name + " " + type);
+
 			/***********************/
 			System.out.println(name + " is a Number");
 			System.out.println("SQL Column statement: " + sql);
 		}
 		else if(isAFloat(type)){
 
-			type = "FLOAT";
-			sql = name + " " + type;
+			this.setType("FLOAT");
+			this.setSQL(name + " " + type);
+
 			System.out.println(name + " is a float");
 			System.out.println("SQL Column statement: " + sql);
 		}
 		else if(isADateTime(type)){
-
-			type = "DATETIME";
-			sql = name + " " + type;
+			
+			this.setType("DATETIME");
+			this.setSQL(name + " " + type);
+			
 			System.out.println(name + " is a DateTime");
 			System.out.println("SQL Column statement: " + sql);
 		}
 		else if(isADate(type)) {
 
-			type = "DATE";
-			sql = name + " " + type;
+			this.setType("DATE");
+			this.setSQL(name + " " + type);
+			
 			System.out.println(name + " is a Date");
 			System.out.println("SQL Column statement: " + sql);
 		}
 		else{
-
-			type = "VARCHAR(255)";
-			sql = name + " " + type;
+			
+			this.setType("VARCHAR(255)");
+			this.setSQL(name + " " + type);
+			
 			System.out.println("sql can not be determined...");
 			System.out.println("SQL Column statement: " + sql);
 		}
 		return sql;
 	}
 	
+	// Test if string is alphabetical
 	public boolean isAlphabetical(String str){
 		
 		boolean status = false;
-		String alphaRegex = "[A-za-z]*";
-		
+		String alphaRegex = "^[A-za-z ]*$";
 		if(regexChecker(alphaRegex, str)){
 			status = true;
 		}
@@ -161,7 +171,42 @@ public class Column {
 		
 		return status;
 	}
-	
+
+	// TODO: Test and fix this function VARCHAR(255) not always recongnized
+	public String formatData(String data){
+		String result = "****";
+		//System.out.println("This is data: " + data);
+		String dataType = this.getType();
+		//System.out.println("This is the data's type: " + dataType);
+		//System.out.println("This is the type: " + type);
+		if(dataType == "VARCHAR(255)") {
+			//System.out.println("~~~~~~~~~~~~~~ HERE ~~~~~~~~~~~~~" );
+			result = "\"" + data + "\"";
+			//System.out.println("This is data for VARCHAR: " + data);
+		}
+		else if(dataType == "DATE") {
+			result = "\"" + convertDate(data) + "\"";
+		}
+		else if(dataType == "FLOAT") {
+			result = "\"" + data + "\"";
+		}
+		else{
+			result = "\"" + data + "\"";
+		}
+
+		
+		
+		return result;
+	}
+	// TODO: come up with a better convert date algorithm validate date efficiently
+	public String convertDate(String date){
+		String result = "";
+		String [] dateArr = date.split("/");
+		if(dateArr.length >= 3)	
+			result = dateArr[2] + "-" + dateArr[0] + "-" + dateArr[1];
+		else { result = date; }
+		return result;
+	}
 	
 	public String getName() {
 		return name;
@@ -183,8 +228,8 @@ public class Column {
 		return lengthValue;
 	}
 
-	public void setLengthValue(String length_Value) {
-		this.lengthValue = length_Value;
+	public void setLengthValue(String lengthValue) {
+		this.lengthValue = lengthValue;
 	}
 
 	public String getDefaultCol() {

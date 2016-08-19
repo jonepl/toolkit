@@ -27,13 +27,11 @@ public class ColumnStructure {
 			
 			colStruct[i] = new Column();
 			try{
-				colStruct[i].determineSQLStatment(header[i],type[i]);
+				colStruct[i].defineColumn(header[i],type[i]);
 			} catch(ArrayIndexOutOfBoundsException e){
-				System.out.println("Index: " + i + " is empty replacing wit empty string");
-				colStruct[i].determineSQLStatment(header[i],"");
+				System.out.println("Index: " + i + " is empty replacing with empty string");
+				colStruct[i].defineColumn(header[i],"");
 			}
-			
-			
 		}
 	}
 	
@@ -42,9 +40,9 @@ public class ColumnStructure {
 		
 		for(int i = 0; i < colStruct.length; i++){
 			
-			System.out.print(colStruct[i].getName() + " , ");
-			System.out.print(colStruct[i].getType() + " , ");
-			System.out.println(colStruct[i].getSQL());
+			System.out.println("Index: " + i + ". Column name: " + colStruct[i].getName());
+			System.out.println("Index: " + i + ". Column type: " + colStruct[i].getType());
+			
 		}
 	}
 	
@@ -56,5 +54,4 @@ public class ColumnStructure {
 	public void setColStruct(Column[] colStruct) {
 		this.colStruct = colStruct;
 	}
-
 }

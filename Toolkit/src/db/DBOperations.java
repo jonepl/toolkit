@@ -61,10 +61,10 @@ public class DBOperations {
 	
 	// Executes a SQL query
 	public void queryUpdate(String query){
-		// TODO: lookup the purpose of the numerical return type of executeUpdate
+		
 		try {
 			st = con.createStatement();
-			int num = st.executeUpdate(query);
+			st.executeUpdate(query);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -96,7 +96,7 @@ public class DBOperations {
 		// Appends the strings require to create each column
 		for(int i = 0; i < csSize; i++){
 			// Appends a comma to all except last row
-			if(i != csSize-1){
+			if(!lastElement(i,csSize)){
 				sql += cs.getColStruct()[i].getSQL() + ", ";
 			}else{
 				sql += cs.getColStruct()[i].getSQL() + ")";
@@ -121,14 +121,48 @@ public class DBOperations {
 	public void insert(String sql){
 		query(sql);
 	}
+	
+	public void insertCSV(String tableName, CSV csv, ColumnStructure cs) {
+		String q = "INSERT INTO " + tableName + " (";
+		String[] header = csv.getHeader();
+		// Appends headers to query statement
+		// TODO headers are stored with spaces 
+		for(int i = 0; i < csv.getNumCols(); i++) {
+			
+			if(!lastElement(i,csv.getNumCols())){
+				q += header[i] + ", ";
+			}
+			else {
+				q += header[i] + ") ";
+			}
+		}
+		q += "VALUES ";
+		
+		System.out.println(q);
+		// TODO change function to use this and remove csv parameter
+		String[] value = csv.getInsertValueList(csv,cs);
+		for(int i = 0; i < value.length; i++){
+			queryUpdate(q + value[i]);
+		}
+	}
 		
 	// Removes a tuple
 	public void delete(String sql){
+		String q = "DELETE FROM tableName WHERE condition";
+		//DELETE FROM tutorials_tbl WHERE tutorial_id=3;
 		query(sql);
+	}
+	
+	// Removes a tuple
+	public void delete(String table, String condition){
+		String q = "DELETE FROM" + table + " tableName WHERE " + condition;
+		//DELETE FROM tutorials_tbl WHERE tutorial_id=3;
+		query(q);
 	}
 	
 	// Updates a tuple
 	public void update(String sql){
+		String q = "UPDATE table SET condition1, condition2";
 		query(sql);
 	}
 		
@@ -161,8 +195,13 @@ public class DBOperations {
 		password = pw;
 	}
 	
-	// Fills defined table with all rows from the csv file passed in
-	public void CSVToDB(CSV csv){
-		
+	public boolean lastElement(int index, int upperbound) {
+		boolean status = false;
+		if (index >= upperbound - 1) status = true;
+		return status;
+	}
+	
+	public void loadCSV(CSV csv){
+		System.out.println("NEED LOGIC");
 	}
 }

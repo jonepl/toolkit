@@ -5,6 +5,7 @@
  */
 
 package db;
+
 import csv.CSV;
 
 public class Main {
@@ -12,11 +13,20 @@ public class Main {
 	public static void main(String[] args) {
 		
 		
-		String file = "MySpreadsheet.csv";
+		String file = "Expenses.csv";
 		CSV csv = new CSV(file,",",true);
 		ColumnStructure cs = new ColumnStructure(csv);
 		
+		System.out.println("~~~~~~~~~~~~~~~~~~~");
+		cs.getColStructDetails();
+		
 		DBOperations dbo = new DBOperations();
-		dbo.createTable("myTable",cs);
+//		dbo.createTable("MyDBTable",cs);
+		
+//		Column c = new Column();
+//		boolean result = c.isAlphabetical("1Hello1");
+//		
+//		System.out.println("Result of your test: " + result);
+		dbo.insertCSV("duh", csv, cs);
 	}
 }
